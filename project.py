@@ -1,9 +1,17 @@
 # import libraries
 import pandas as pd
+import numpy as np
 
-# read file
+# Step 1: Data Preprocessing
+
+# Read file
 dataframe = pd.read_csv("Data.csv")
-print(dataframe.head())
+
+# Replace NaN with None
+dataframe.replace(np.NaN, None, inplace = True )
+
+# Print first 5 values
+# print(dataframe.head())
 
 # Convert each row to a dictionary
 material_dicts = []
@@ -12,56 +20,88 @@ for index, row in dataframe.iterrows():
     material_dicts.append(material_dict)
 
 # Display the list of dictionaries
-print(material_dicts)
+# print(material_dicts)
 
-# Step 1: Data Preprocessing
+
+# Step 2: Decision Tree Construction
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+        self.materials = []
+
+def build_binary_search_tree(dataset, property_name):
+    # Sort the dataset based on the specified property, recursive
+    sorted_dataset = sorted(dataset, key=lambda x: x[property_name])
+
+    if not sorted_dataset:
+        return None
+
+    middle_index = len(sorted_dataset) // 2
+    node = Node(sorted_dataset[middle_index][property_name])
+    node.materials = [sorted_dataset[middle_index]]  # Store only the middle element in materials
+    node.left = build_binary_search_tree(sorted_dataset[:middle_index], property_name)
+    node.right = build_binary_search_tree(sorted_dataset[middle_index + 1:], property_name)
+
+    return node
+
+# Function to perform in-order traversal and print nodes
+def print_tree_in_order(node):
+    if node:
+        print_tree_in_order(node.left)
+        print(f"Node: {node.data}, Materials: {node.materials}")
+        print_tree_in_order(node.right)
+
+# Step 2: Decision Tree Construction
 
 # Sample dataset (replace this with your actual dataset)
 materials_data = [
-    {"material": "Steel", "tensile_strength": 500, "density": 7.85, "cost": 10, "corrosion_resistance": "high"},
-    {"material": "Aluminum", "tensile_strength": 300, "density": 2.7, "cost": 20, "corrosion_resistance": "medium"},
+    {"material": "Steel", "tensile_strength": 387, "density": 7.85, "cost": 10, "corrosion_resistance": "high"},
+    {"material": "Aluminum", "tensile_strength": 385, "density": 2.7, "cost": 20, "corrosion_resistance": "medium"},
+    {"material": "doge", "tensile_strength": 386, "density": 2.7, "cost": 20, "corrosion_resistance": "medium"},
+    {"material": "fish", "tensile_strength": 380, "density": 2.7, "cost": 20, "corrosion_resistance": "medium"},
+    {"material": "cat", "tensile_strength": 390, "density": 2.7, "cost": 20, "corrosion_resistance": "medium"}
     # ... add more materials and their properties
 ]
 
-# Step 2: Decision Tree Construction
+# Property to use for sorting
+property_name = "tensile_strength"
 
-def build_decision_tree(dataset, criteria):
-    # Recursive function to build decision tree
-    # Implement your decision tree construction algorithm here
-    # ...
-    class Node:
-        def __init__(self, data, lchild, rchild):
-            self.data = data
-            self.lchild = lchild
-            self.rchild = rchild
-            self.materials = materials
+# Construct the binary search tree
+root_node = build_binary_search_tree(materials_data, property_name)
+
+# print_tree_in_order(root_node)
 # Step 3: User Interaction
+results = []
 
-def recommend_material(user_input, decision_tree):
-    # Traverse the decision tree based on user input
-    # Implement the traversal logic here
-    # ...
-    return
-# Step 4: Visualization
+def query_tree(node, min_strength, max_strength):
 
-def visualize_decision_tree(decision_tree):
-    # Use a library like Graphviz to visualize the decision tree
-    # ...
-    return
-# Example usage:
 
-# Step 1: Data Preprocessing
-materials = [material["material"] for material in materials_data]
-material_properties = {material: {key: value for key, value in material.items() if key != "material"} for material in materials_data}
+    if node:
+        # Convert node data to numeric type for proper comparison
+        num_node_data = float(node.data) if node.data is not None else None
 
-# Step 2: Decision Tree Construction
-criteria = ["tensile_strength", "density", "cost", "corrosion_resistance"]
-decision_tree = build_decision_tree(material_properties, criteria)
+        # Recursively search the left subtree if there could be relevant materials
+        if num_node_data is not None and num_node_data >= min_strength:
+            query_tree(node.left, min_strength, max_strength)
 
-# Step 3: User Interaction
-user_input = {"tensile_strength": 400, "cost": 15}
-recommended_material = recommend_material(user_input, decision_tree)
-print(f"Recommended Material: {recommended_material}")
+        # If the node's data is within the specified range, add materials
+        if min_strength <= num_node_data and num_node_data <= max_strength:
+            results.extend(node.materials)
+        
+        # Recursively search the right subtree if there could be relevant materials
+        if num_node_data is not None and num_node_data <= max_strength:
+            query_tree(node.right, min_strength, max_strength)
 
-# Step 4: Visualization
-visualize_decision_tree(decision_tree)
+    return results
+
+
+# Example search: Find materials with tensile strength between 200 and 400
+min_tensile_strength = 385
+max_tensile_strength = 387
+query_results = query_tree(root_node, min_tensile_strength, max_tensile_strength)
+
+# Print the results
+for material in query_results:
+    print(material)
