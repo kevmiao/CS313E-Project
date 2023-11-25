@@ -2,7 +2,8 @@
 import pandas as pd
 import numpy as np
 
-# Step 1: Data Preprocessing
+
+# 1. Data Preprocessing
 
 # Read file
 dataframe = pd.read_csv("Data.csv")
@@ -23,7 +24,8 @@ for index, row in dataframe.iterrows():
 # print(material_dicts)
 
 
-# Step 2: Decision Tree Construction
+# 2. BST Construction
+
 class Node:
     def __init__(self, data):
         self.data = data
@@ -53,30 +55,11 @@ def print_tree_in_order(node):
         print(f"Node: {node.data}, Materials: {node.materials}")
         print_tree_in_order(node.right)
 
-# Step 2: Decision Tree Construction
 
-# Sample dataset (replace this with your actual dataset)
-materials_data = [
-    {"material": "Steel", "tensile_strength": 387, "density": 7.85, "cost": 10, "corrosion_resistance": "high"},
-    {"material": "Aluminum", "tensile_strength": 385, "density": 2.7, "cost": 20, "corrosion_resistance": "medium"},
-    {"material": "doge", "tensile_strength": 386, "density": 2.7, "cost": 20, "corrosion_resistance": "medium"},
-    {"material": "fish", "tensile_strength": 380, "density": 2.7, "cost": 20, "corrosion_resistance": "medium"},
-    {"material": "cat", "tensile_strength": 390, "density": 2.7, "cost": 20, "corrosion_resistance": "medium"}
-    # ... add more materials and their properties
-]
+# 3. User Interaction
 
-# Property to use for sorting
-property_name = "tensile_strength"
-
-# Construct the binary search tree
-root_node = build_binary_search_tree(materials_data, property_name)
-
-# print_tree_in_order(root_node)
-# Step 3: User Interaction
 results = []
-
 def query_tree(node, min_strength, max_strength):
-
 
     if node:
         # Convert node data to numeric type for proper comparison
@@ -97,11 +80,40 @@ def query_tree(node, min_strength, max_strength):
     return results
 
 
-# Example search: Find materials with tensile strength between 200 and 400
-min_tensile_strength = 385
-max_tensile_strength = 387
-query_results = query_tree(root_node, min_tensile_strength, max_tensile_strength)
+def main():
+    print("\nThis is the Material Selection for Structural Components software.\n")
+    print("You can specify the property that you desire, as well as the range for the values of the property.\n")
+    print("These are the current compatible properties that you can search through:")
+    print("    Su (Tensile strength)")
+    print("    A5 (Elongation at break or strain)")
+    print("    Bhn (Brinell Hardness Number)")
+    print("    E (Elastic Modulus)")
+    print("    G (Shear Modulus)")
+    print("    mu (Poisson's Ratio)")
+    print("    Ro (Density)")
+    print("    Su (Tensile strength)")
+    print()
 
-# Print the results
-for material in query_results:
-    print(material)
+    # Property to use for sorting
+    property_name = input("Make your selection: ")
+    print()
+
+    # Construct the binary search tree
+    root_node = build_binary_search_tree(material_dicts, property_name)
+
+    # Example search: Find materials with tensile strength between 200 and 400
+    minimum = int(input("Minimum value: "))
+    maximum = int(input("Maximum value: "))
+    print()
+
+    query_results = query_tree(root_node, minimum, maximum)
+
+    # Print the results
+    print(f"These are the results of {property_name} that fall in between {minimum} and {maximum}: \n")
+    for material in query_results:
+        print(material)
+
+    print()
+
+if __name__ == "__main__":
+    main()
