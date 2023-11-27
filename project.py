@@ -1,3 +1,8 @@
+'''Engineering Materials Database and Material Selection Helper'''
+# By: Kevin Miao, Tyler Yan
+# CS 313E 52590
+# 11/28/2023
+
 # import libraries
 import pandas as pd
 import numpy as np
@@ -27,14 +32,15 @@ for index, row in dataframe.iterrows():
 # 2. BST Construction
 
 class Node:
+    '''BST Node Class'''
     def __init__(self, data):
         self.data = data
         self.left = None
         self.right = None
         self.materials = []
 
-def build_binary_search_tree(dataset, property_name):
-    # Sort the dataset based on the specified property, recursive
+def build_bst(dataset, property_name):
+    '''Sort the dataset based on the specified property, recursive'''
     sorted_dataset = sorted(dataset, key=lambda x: x[property_name])
 
     if not sorted_dataset:
@@ -43,13 +49,13 @@ def build_binary_search_tree(dataset, property_name):
     middle_index = len(sorted_dataset) // 2
     node = Node(sorted_dataset[middle_index][property_name])
     node.materials = [sorted_dataset[middle_index]]  # Store only the middle element in materials
-    node.left = build_binary_search_tree(sorted_dataset[:middle_index], property_name)
-    node.right = build_binary_search_tree(sorted_dataset[middle_index + 1:], property_name)
+    node.left = build_bst(sorted_dataset[:middle_index], property_name)
+    node.right = build_bst(sorted_dataset[middle_index + 1:], property_name)
 
     return node
 
-# Function to perform in-order traversal and print nodes
 def print_tree_in_order(node):
+    '''Function to perform in-order traversal and print nodes'''
     if node:
         print_tree_in_order(node.left)
         print(f"Node: {node.data}, Materials: {node.materials}")
@@ -60,6 +66,7 @@ def print_tree_in_order(node):
 
 results = []
 def query_tree(node, min_strength, max_strength):
+    '''Helps determine the correct material'''
 
     if node:
         # Convert node data to numeric type for proper comparison
@@ -72,7 +79,9 @@ def query_tree(node, min_strength, max_strength):
         # If the node's data is within the specified range, add materials
         if min_strength <= num_node_data and num_node_data <= max_strength:
             results.extend(node.materials)
-        
+            # print(type(node.materials))
+            # print(type(node.materials[0]))
+
         # Recursively search the right subtree if there could be relevant materials
         if num_node_data is not None and num_node_data <= max_strength:
             query_tree(node.right, min_strength, max_strength)
@@ -81,39 +90,60 @@ def query_tree(node, min_strength, max_strength):
 
 
 def main():
+    'Main Function Call'
+
     print("\nThis is the Material Selection for Structural Components software.\n")
-    print("You can specify the property that you desire, as well as the range for the values of the property.\n")
-    print("These are the current compatible properties that you can search through:")
-    print("    Su (Tensile strength)")
-    print("    A5 (Elongation at break or strain)")
-    print("    Bhn (Brinell Hardness Number)")
-    print("    E (Elastic Modulus)")
-    print("    G (Shear Modulus)")
-    print("    mu (Poisson's Ratio)")
-    print("    Ro (Density)")
-    print("    Su (Tensile strength)")
-    print()
+    print("You can specify the property that you desire, "
+            "as well as the range for the values of the property.\n")
 
-    # Property to use for sorting
-    property_name = input("Make your selection: ")
-    print()
+    while True:
+        results.clear()
 
-    # Construct the binary search tree
-    root_node = build_binary_search_tree(material_dicts, property_name)
+        print("These are the current compatible properties that you can search through:")
+        print("    Su (Tensile Strength) [Mpa]")
+        print("    Sy (Yield Strength) [MPa]")
+        print("    A5 (Elongation at Break or Strain) [%]")
+        print("    Bhn (Brinell Hardness Number)")
+        print("    E (Elastic Modulus) [MPa]")
+        print("    G (Shear Modulus) [MPa]")
+        print("    mu (Poisson's Ratio)")
+        print("    Ro (Density) [kg/m^3]")
+        print("    select X to exit")
+        print()
 
-    # Example search: Find materials with tensile strength between 200 and 400
-    minimum = int(input("Minimum value: "))
-    maximum = int(input("Maximum value: "))
-    print()
+        # Property to use for sorting
+        property_name = input("Make your selection: ")
+        print()
+        if property_name == "X":
+            break
+        if property_name not in ["Su", "Sy", "A5", "Bhn", "E", "G", "mu", "Ro"]:
+            print("Please select a property listed above.")
+            continue
 
-    query_results = query_tree(root_node, minimum, maximum)
+        # Construct the binary search tree
+        root_node = build_bst(material_dicts, property_name)
 
-    # Print the results
-    print(f"These are the results of {property_name} that fall in between {minimum} and {maximum}: \n")
-    for material in query_results:
-        print(material)
+        # Example search: Find materials with tensile strength between 200 and 400
+        minimum = int(input("Minimum value: "))
+        maximum = int(input("Maximum value: "))
+        print()
 
-    print()
+        query_results = query_tree(root_node, minimum, maximum)
+
+        # Print the results
+        if query_results:
+            print(f"These are the results of {property_name} that fall "
+                "in between {minimum} and {maximum}: \n")
+            for material in query_results:
+                print(material)
+        else:
+            print(f"Sorry, there are no materials with {property_name} that fall "
+                "in between {minimum} and {maximum}: \n")
+
+        print()
+
+    print("Thanks for using the Material Selection for "
+          "Structural Components software. See you again!\n\n")
 
 if __name__ == "__main__":
     main()

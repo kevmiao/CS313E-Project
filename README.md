@@ -21,51 +21,51 @@ The code imports the Pandas library and NumPy library using the aliases pd and n
 2. Classes:
 
 Node Class:
-    - Represents a node in a binary search tree.
-    - Contains attributes: data (node value), left (left child), right (right child), and materials (a list of materials associated with the node's value).
+- Represents a node in a binary search tree.
+- Contains attributes: data (node value), left (left child), right (right child), and materials (a list of materials associated with the node's value).
 
 3. Methods/Functions:
 
 Data Preprocessing Section:
-    Read File:
-        - Uses Pandas to read a CSV file ("Data.csv") and stores it in a DataFrame (dataframe).
+Read File:
+- Uses Pandas to read a CSV file ("Data.csv") and stores it in a DataFrame (dataframe).
 
-    Replace NaN with None:
-        - Uses NumPy to replace NaN values in the DataFrame with None.
+Replace NaN with None:
+- Uses NumPy to replace NaN values in the DataFrame with None.
 
-    Convert to Dictionary:
-        - Iterates over rows in the DataFrame, converts each row to a dictionary, and appends it to the list material_dicts.
+Convert to Dictionary:
+- Iterates over rows in the DataFrame, converts each row to a dictionary, and appends it to the list material_dicts.
 
 BST Construction Section:
-    build_binary_search_tree Function:
-        - Takes a dataset and a property name as input.
-        - Constructs a binary search tree based on the specified property.
-        - Uses the Node class to create nodes.
+build_bst Function:
+- Takes a dataset and a property name as input.
+- Constructs a binary search tree based on the specified property.
+- Uses the Node class to create nodes.
 
-    print_tree_in_order Function:
-        - Performs an in-order traversal of the binary search tree and prints each node's data and associated materials.
+print_tree_in_order Function:
+- Performs an in-order traversal of the binary search tree and prints each node's data and associated materials.
 
 User Interaction Section:
-    query_tree Function:
-        - A DFS algorithm that searches a binary search tree based on a range of values
-        - Takes a node and a range (minimum, maximum) as input.
-        - Recursively searches the binary search tree and collects materials within the specified range.
-        - Returns a list of materials.
+query_tree Function:
+- A DFS algorithm that searches a binary search tree based on a range of values
+- Takes a node and a range (minimum, maximum) as input.
+- Recursively searches the binary search tree and collects materials within the specified range.
+- Returns a list of materials.
 
 4. Iterations Between Them:
 
 The code follows a sequential flow:
-    - Reads and preprocesses data.
-    - Constructs a binary search tree based on a property.
-    - Performs a query on the tree to find materials with that property within a specified range.
-    - Prints the results.
+- Reads and preprocesses data.
+- Constructs a binary search tree based on a property.
+- Performs a query on the tree to find materials with that property within a specified range.
+- Prints the results.
 5. Main Function:
 
 main Function:
-    - Identifies a property depending on the input.
-    - Constructs the binary search tree using the provided dataset.
-    - Performs a query on the tree.
-    - Prints the results.
+- Identifies a property depending on the input.
+- Constructs the binary search tree using the provided dataset.
+- Performs a query on the tree.
+- Prints the results.
 6. Execution:
 
 The main function is executed if the script is run as the main program.
@@ -79,20 +79,38 @@ The unittest module is used for testing.
 2. Classes and Functions:
 
 TestMaterialSelection Class (unittest.TestCase):
-    setUp Method:
-        - Initializes the sample dataset (self.materials_data) for testing.
+setUp Method:
+- Initializes the sample dataset (self.materials_data) for testing.
 
 test_query_search_tensile_strength Method:
-    - Tests the query_tree function for querying materials based on tensile strength.
-    - Builds a binary search tree using tensile strength as the property.
-    - Queries for materials within the range of 380 and 387 tensile strength.
-    - Asserts that the query results match the expected results.
+- Tests the query_tree function for querying materials based on tensile strength.
+- Builds a binary search tree using tensile strength as the property.
+- Queries for materials within the range of 1 and 4 tensile strength.
+- Asserts that the query results match the expected results.
+
+test_query_search_tensile_strength_2 Method:
+- Tests the query_tree function for querying materials based on tensile strength.
+- Builds a binary search tree using tensile strength as the property.
+- Queries for materials within the range of 4 and 5 tensile strength.
+- Asserts that the query results match the expected results.
 
 test_query_search_cost Method:
-    - Tests the query_tree function for querying materials based on cost.
-    - Builds a binary search tree using cost as the property.
-    - Queries for materials within the range of 150 and 200 cost.
-    - Asserts that the query results match the expected results.
+- Tests the query_tree function for querying materials based on cost.
+- Builds a binary search tree using cost as the property.
+- Queries for materials within the range of 150 and 200 cost.
+- Asserts that the query results match the expected results.
+
+test_query_search_cost_2 Method: 
+- Tests the query_tree function for querying materials based on cost.
+- Builds a binary search tree using cost as the property.
+- Queries for materials within the range of 1 and 15 cost.
+- Asserts that the query results match the expected results.
+
+test_query_search_density Method
+- Tests the query_tree function for querying materials based on density.
+- Builds a binary search tree using density as the property.
+- Queries for materials within the range of 5 and 9 cost.
+- Asserts that the query results match the expected results.
 
 3. Execution:
 
