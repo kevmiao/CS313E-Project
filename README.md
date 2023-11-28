@@ -139,3 +139,7 @@ The code is able to handle data preprocessing pretty well using Pandas, includin
 One area of improvement is the memory usage. The code creates a list of dictionaries (material_dicts) in memory. For large datasets, this could consume a significant amount of memory. If memory efficiency is a concern, there are definitely ways to improve it.
 
 Another thing is that the software might have some problems and errors if the user specifies a column that does not exist. Additionally, for columns that are not integers or floats, creating the binary tree might cause some errors.
+
+## Additional: Interpretation of Results
+
+The results of running the software is a dictionary, multiple dictionaries, or no dictionaries at all. These dictionaries are within a range of a parameter, previously set by the user. Additionally, this software is applicable to other databases as well (as shown by the test cases), though the instructions in the main function only apply to this database. The benefit of this selection helper is that it is able to search through a large quantity of data and return information useful to the user. Each time the user searches for a set of data, the helper resets the list that is returned, allowing for reusability.

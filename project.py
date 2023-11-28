@@ -41,7 +41,13 @@ class Node:
 
 def build_bst(dataset, property_name):
     '''Sort the dataset based on the specified property, recursive'''
-    sorted_dataset = sorted(dataset, key=lambda x: x[property_name])
+
+    # Filter out elements with None values for the specified property
+    filtered_dataset = [item for item in dataset if item[property_name] is not None]
+
+    # Sort the filtered dataset based on the specified property
+    sorted_dataset = sorted(filtered_dataset, key=lambda x: x[property_name])
+    # sorted_dataset = sorted(dataset, key=lambda x: x[property_name])
 
     if not sorted_dataset:
         return None
@@ -65,7 +71,7 @@ def print_tree_in_order(node):
 # 3. User Interaction
 
 results = []
-def query_tree(node, min_strength, max_strength):
+def query_tree(node, min_val, max_val):
     '''Helps determine the correct material'''
 
     if node:
@@ -73,18 +79,16 @@ def query_tree(node, min_strength, max_strength):
         num_node_data = float(node.data) if node.data is not None else None
 
         # Recursively search the left subtree if there could be relevant materials
-        if num_node_data is not None and num_node_data >= min_strength:
-            query_tree(node.left, min_strength, max_strength)
+        if num_node_data is not None and num_node_data >= min_val:
+            query_tree(node.left, min_val, max_val)
 
         # If the node's data is within the specified range, add materials
-        if min_strength <= num_node_data and num_node_data <= max_strength:
+        if min_val <= num_node_data and num_node_data <= max_val:
             results.extend(node.materials)
-            # print(type(node.materials))
-            # print(type(node.materials[0]))
 
         # Recursively search the right subtree if there could be relevant materials
-        if num_node_data is not None and num_node_data <= max_strength:
-            query_tree(node.right, min_strength, max_strength)
+        if num_node_data is not None and num_node_data <= max_val:
+            query_tree(node.right, min_val, max_val)
 
     return results
 
@@ -100,7 +104,7 @@ def main():
         results.clear()
 
         print("These are the current compatible properties that you can search through:")
-        print("    Su (Tensile Strength) [Mpa]")
+        print("    Su (Tensile Strength) [MPa]")
         print("    Sy (Yield Strength) [MPa]")
         print("    A5 (Elongation at Break or Strain) [%]")
         print("    Bhn (Brinell Hardness Number)")
@@ -117,15 +121,15 @@ def main():
         if property_name == "X":
             break
         if property_name not in ["Su", "Sy", "A5", "Bhn", "E", "G", "mu", "Ro"]:
-            print("Please select a property listed above.")
+            print("Sorry, that was not a valid input. Please select a property listed above.\n")
             continue
 
         # Construct the binary search tree
         root_node = build_bst(material_dicts, property_name)
 
         # Example search: Find materials with tensile strength between 200 and 400
-        minimum = int(input("Minimum value: "))
-        maximum = int(input("Maximum value: "))
+        minimum = float(input("Minimum value: "))
+        maximum = float(input("Maximum value: "))
         print()
 
         query_results = query_tree(root_node, minimum, maximum)
@@ -133,12 +137,12 @@ def main():
         # Print the results
         if query_results:
             print(f"These are the results of {property_name} that fall "
-                "in between {minimum} and {maximum}: \n")
+                f"in between {minimum} and {maximum}: \n")
             for material in query_results:
                 print(material)
         else:
             print(f"Sorry, there are no materials with {property_name} that fall "
-                "in between {minimum} and {maximum}: \n")
+                f"in between {minimum} and {maximum}. \n")
 
         print()
 
