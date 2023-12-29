@@ -1,4 +1,4 @@
-# CS313E-Project
+# Materials Database Selector
 
 Material Selection for Structural Components Software - Kevin Miao, Tyler Yan
 
